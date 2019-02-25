@@ -226,9 +226,9 @@ class GPSVector:
 
         return self.getListOfIntermediatePoints(numberOfIntermediatePoints)  
         
-        
-        
-        
+#---------------------GPSData---------------------------------------------------------------------------------------------------------------------------
+
+
         
         
         
