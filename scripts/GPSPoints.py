@@ -134,7 +134,7 @@ def GpsPoints():
                 curr_point_idx += 1
                 
         elif curr_point_idx == len(points):     #final target has been reached
-            continue    
+            pass    
         else:
             #check if its closer to the next target in the list
             next_target_point = GPSPoint(float(points[curr_point_idx+1][0]), float(points[curr_point_idx+1][1]))
