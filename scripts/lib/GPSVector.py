@@ -95,7 +95,7 @@ class GPSPoint:
         return destination 
     
     #intermediateGPSPoint
-    #returns an intermediate point between an start point (self) and a destination (point) in a fraction of the great circle path denoted by f where 0.0 is the start point and 1.0 is the destination
+    #returns an intermediate point between a start point (self) and a destination (point) in a fraction of the great circle path denoted by f where 0.0 is the start point and 1.0 is the destination
     #source https://www.movable-type.co.uk/scripts/latlong.html  
     def intermediateGPSPoint(self, point, f):
         
@@ -184,7 +184,8 @@ class GPSVector:
         return msg
         
     #getListOfIntermediatePoints()
-    #returns a list of intermediate points (length specified by numberOfIntermediatePoints) taking the init_point and end_point of self as arguments using the function intermediateGPSPoint(self, point, f) from the GPSPoint class 
+    #returns a list of intermediate points (length of the list specified by numberOfIntermediatePoints) taking the init_point and end_point of self as arguments using the function intermediateGPSPoint(self, point, f) from the GPSPoint class 
+    #the list contains numberOfIntermediatePoints intermediate points that are equidistant between them
     def getListOfIntermediatePoints(self, numberOfIntermediatePoints):
         
         #Handle TypeError & ValueError exceptions when args are not instantiated correctly
@@ -210,7 +211,20 @@ class GPSVector:
         
         return points
         
-            
+    #getListOfIntermediatePointsBasedOnDistance()
+    #returns a list of intermediate points taking the init_point and end_point of self as arguments using the function intermediateGPSPoint(self, point, f) from the GPSPoint class 
+    #the list is generated taking in account that the intermediate points must be spaced by distanceBetweenPoints between them
+    #this function uses getListOfIntermediatePoints() once it has determined how many intermediate points are needed to match the criteria of spacing by distance
+    def getListOfIntermediatePointsBasedOnDistance(self, distanceBetweenPoints):
+        
+        #Handle TypeError & ValueError exceptions when args are not instantiated correctly
+        if not isinstance(float(distanceBetweenPoints), float) or distanceBetweenPoints <= 0:
+            raise ValueError('distanceBetweenPoints must be a number and has to be greater than 0.0')
+        
+        #calculate numberOfIntermediatePoints
+        numberOfIntermediatePoints = int(round(self.magnitude/distanceBetweenPoints))-1
+
+        return self.getListOfIntermediatePoints(numberOfIntermediatePoints)  
         
         
         

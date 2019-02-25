@@ -17,8 +17,10 @@ if __name__ == '__main__':
     print(Vec2)
     
     
-    points = Vec2.getListOfIntermediatePoints(1000)
+    points = Vec.getListOfIntermediatePointsBasedOnDistance(5)
     
+    print(len(points))
+
     for i in range(0, len(points)):
         print(points[i])
     
