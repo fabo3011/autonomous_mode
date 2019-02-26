@@ -18,9 +18,17 @@ if __name__ == '__main__':
     
     
     points = Vec.getListOfIntermediatePointsBasedOnDistance(5)
+
+    lista = GPSListOfPoints(points)
+
+    print(lista)
+
+    lista.writeListToFile('test.txt')
     
+    '''
     print(len(points))
 
     for i in range(0, len(points)):
         print(points[i])
+    '''
     
