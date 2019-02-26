@@ -289,7 +289,7 @@ class XYPoint:
         XYOrigin = XYPoint(0,0)
 
         #Using GPSVector, calculate the conversion from XY to GPS with XY distance and angle transformed to magnitude and bearing
-        ToGPS = GPSVector(origin, XYOrigin.distanceToXYPoint(self), XYOrigin.angleToXYPoint(self))
+        ToGPS = GPSVector(origin, XYOrigin.distanceToXYPoint(self), XYOrigin.angleToBearing(XYOrigin.angleToXYPoint(self)))
 
         return ToGPS.end_point
 
