@@ -5,6 +5,7 @@
 #a01209914@itesm.mx
 
 from math import *
+import os
 
 #constants for math functions
 earthRadius = 6371e3
@@ -226,11 +227,43 @@ class GPSVector:
 
         return self.getListOfIntermediatePoints(numberOfIntermediatePoints)  
         
-#---------------------GPSData---------------------------------------------------------------------------------------------------------------------------
+#---------------------GPSListOfPoints---------------------------------------------------------------------------------------------------------------------------
 
+class GPSListOfPoints:
 
+    def __init__(self, points=None):
 
+        if points == None:
+            return
+        #Handle TypeError & ValueError exceptions when args are not instantiated correctly
+        if not isinstance(points, list):
+            raise TypeError('GPSListOfPoints Object must be passed a list')
 
+        for i in range(0, len(points)):
+            if not isinstance(points[i], GPSPoint):
+                raise TypeError('GPSListOfPoints Object Elements must be of type GPSPoint')
+        self.points = points
+        self.folder = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
+
+    def __str__(self):
+        if self.points == None:
+            return
+        #print list of points
+        for i in range(0, len(self.points)):
+            print("%s\n" % (self.points[i]))
+        return ''
+
+    def writeListToFile(self, filename):
+        if self.points == None:
+            return
+        #open file
+        FILE = open(self.folder+filename, 'w')
+        #write each entry
+        for i in range(0, len(self.points)):
+            point_str = ("%s %s\n" % (self.points[i].latitude, self.points[i].longitude) )  
+            FILE.write(point_str)
+        FILE.close()
+        
 
 #---------------------XYPoint---------------------------------------------------------------------------------------------------------------------------
 
