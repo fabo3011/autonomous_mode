@@ -4,6 +4,8 @@
 #Fabian Gomez Gonzalez
 #a01209914@itesm.mx
 
+#Project ALVIN (Autonomous Logic Virtual Intelligence n' Navigation)
+
 from math import *
 
 import rospy
