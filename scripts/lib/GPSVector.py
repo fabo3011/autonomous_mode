@@ -229,12 +229,79 @@ class GPSVector:
 #---------------------GPSData---------------------------------------------------------------------------------------------------------------------------
 
 
+
+
+
+#---------------------XYPoint---------------------------------------------------------------------------------------------------------------------------
+
+class XYPoint:
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
+    
+    def __str__(self):
+        msg = '[%.6f, %.6f]' % (self.x, self.y)
+        return msg
+
+    #distanceToXYPoint
+    #Calculates distance between points in a cartesian plane
+    def distanceToXYPoint(self, point):
+
+        #Handle TypeError exceptions when args are not instantiated correctly
+        if not isinstance(point, XYPoint):
+            raise TypeError('distanceToXYPoint(self,point) must be passed a XYPoint class object')
+
+        #diff
+        d_x = point.x - self.x 
+        d_y = point.y - self.y
+
+        #Calculate distance
+        distance = sqrt(d_x*d_x+d_y*d_y)
+        return distance
+
+    #distanceToXYPoint
+    #Calculates angle formed by a vector with 2 points in a cartesian plane (self -> point) in normalized degrees
+    def angleToXYPoint(self, point):
+
+        #Handle TypeError exceptions when args are not instantiated correctly
+        if not isinstance(point, XYPoint):
+            raise TypeError('angleToXYPoint(self,point) must be passed a XYPoint class object')
+
+        #diff
+        d_x = point.x - self.x 
+        d_y = point.y - self.y
+
+        #Calculate angle and normalize to 0-360
+        angle = (degrees(atan2(d_y, d_x)) + 360.0) % 360.0
+        return angle
         
+
+    #XYToGPS()
+    #This function approximates a point in the cartesian plane (x,y) and transforms it to its equivalent in GPS coordinates taking origin as 
+    #the initial coordinate that references to the cartesian plane as the (0,0) coordiante
+    def XYToGPS(self, origin):
+
+        #Handle TypeError exceptions when args are not instantiated correctly
+        if not isinstance(origin, GPSPoint):
+            raise TypeError('XYToGPS(self, origin) must be passed a GPSPoint class object')
         
+        #Origin in cartesian coordinates
+        XYOrigin = XYPoint(0,0)
+
+        #Using GPSVector, calculate the conversion from XY to GPS with XY distance and angle transformed to magnitude and bearing
+        ToGPS = GPSVector(origin, XYOrigin.distanceToXYPoint(self), XYOrigin.angleToXYPoint(self))
+
+        return ToGPS.end_point
+
+    #angleToBearing()
+    #Approximates a cartesian plane XY angle (normalized to 360.0) to GPS bearing
+    def angleToBearing(self, angle):
+
+        #Handle TypeError exceptions when args are not instantiated correctly
+        if not isinstance(float(angle), float) or angle < 0.0 or angle > 360.0:
+                raise ValueError('angle must be a number and has to be between 0.0 and 360.0')
         
-        
-        
-        
+        return ((90.0-angle)+360.0) % 360.0
         
         
         
