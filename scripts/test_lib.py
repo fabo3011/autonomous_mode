@@ -24,6 +24,9 @@ if __name__ == '__main__':
     print(lista)
 
     lista.writeListToFile('test.txt')
+
+    lista.loadListFromFile('log.txt')
+    print(lista)
     
     '''
     print(len(points))
