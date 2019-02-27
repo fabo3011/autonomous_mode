@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 
+#node by fgg for EagleX
+#Fabian Gomez Gonzalez
+#a01209914@itesm.mx
+
+#Project ALVIN (Autonomous Logic Virtual Intelligence n' Navigation)
+
 import rospy
 import roslib
 import os
