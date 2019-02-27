@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+#node by fgg for EagleX
+#Fabian Gomez Gonzalez
+#a01209914@itesm.mx
+
+#Project ALVIN (Autonomous Logic Virtual Intelligence n' Navigation)
+
 import rospy
 import roslib
 import os
@@ -14,7 +21,7 @@ from lib.Quaternion import pyQuaternion
 pose = Odometry()
 
 #path where the initial GPS coordinate [latitude, longitude] is located
-directory = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
+#directory = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
 filename = "sim_init.txt"
 
 def pose_callback(data):
@@ -22,22 +29,6 @@ def pose_callback(data):
     pose.pose.pose.position.x  = data.pose.pose.position.x
     pose.pose.pose.position.y  = data.pose.pose.position.y 
     pose.pose.pose.orientation = data.pose.pose.orientation   
-
-#Load Points From File
-#This funciton loads the list of points (pairs of GPS coordinates [latitude, longitude]) contained in pathToFile published by the GenerateList.py node
-def loadPointsFromFile(pathToFile):
-    points = []
-    #open file with GPS coordinate points
-    FILE = open(pathToFile,"r")
-    #read first line
-    line = FILE.readline()
-    while len(line) > 0:    #while there exists a next line to read
-        points.append(line.split())
-        line = FILE.readline()
-    #close file
-    FILE.close()
-    #return list of points
-    return points
 
 def SimGPS():
 
@@ -51,10 +42,11 @@ def SimGPS():
     rospy.Subscriber('base_pose_ground_truth',Odometry,pose_callback)
 
     #load initial point (lat = init_point[0][0], lon = init_point[0][1])
-    init_point_file = loadPointsFromFile(directory+filename)
+    init_point_file = GPSListOfPoints()
+    init_point_file.loadListFromFile(filename)
 
     #load initial point to an object GPSPoint()
-    origin = GPSPoint(float(init_point_file[0][0]),float(init_point_file[0][1]))
+    origin = GPSPoint(init_point_file[0])
 
     r = rospy.Rate(1) #1 Hz (rate of /gpssim)
 

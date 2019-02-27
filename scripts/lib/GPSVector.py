@@ -4,6 +4,8 @@
 #Fabian Gomez Gonzalez
 #a01209914@itesm.mx
 
+#Project ALVIN (Autonomous Logic Virtual Intelligence n' Navigation)
+
 from math import *
 import os
 
@@ -14,16 +16,31 @@ earthRadius = 6371e3
 
 class GPSPoint:
     #GPSPoint is instantiated using latitude and longitude in decimal degrees notation
-    def __init__(self, latitude=0.0, longitude=0.0):
-    
-        #Handle ValueError exceptions when args are not instantiated correctly
-        if not isinstance(float(latitude), float) or latitude < -90.0 or latitude > 90.0:
-            raise ValueError('latitude must be a number and has to be between -90.0 and 90.0')
-        if not isinstance(float(longitude), float) or longitude < -180.0 or longitude > 180.0:
-            raise ValueError('longitude must be a number and has to be between -180.0 and 180.0')
-        
-        self.latitude  = latitude
-        self.longitude = longitude
+    def __init__(self, *args, **kwargs):
+
+        if len(args) == 0:
+            #Default Values
+            self.latitude  = 0.0
+            self.longitude = 0.0
+        elif len(args) == 1:
+            #Handle TypeError exceptions when args are not instantiated correctly
+            if not isinstance(args[0], GPSPoint):
+                raise TypeError('GPSPoint must be passed a GPSPoint class object')
+            self.latitude  = args[0].latitude
+            self.longitude = args[0].longitude
+        elif len(args) == 2:
+            latitude  = float(args[0])
+            longitude = float(args[1])
+            #Handle ValueError exceptions when args are not instantiated correctly
+            if not isinstance(latitude, float) or latitude < -90.0 or latitude > 90.0:
+                raise ValueError('latitude must be a number and has to be between -90.0 and 90.0')
+            if not isinstance(longitude, float) or longitude < -180.0 or longitude > 180.0:
+                raise ValueError('longitude must be a number and has to be between -180.0 and 180.0')
+            
+            self.latitude  = latitude
+            self.longitude = longitude
+        else:
+            raise TypeError('GPSPoint: Invalid number of arguments in constructor')
         
     def __str__(self):
         msg = '[%.6f, %.6f]' % (self.latitude, self.longitude)
@@ -233,6 +250,9 @@ class GPSListOfPoints:
 
     def __init__(self, points=None):
 
+        #assign folder to store GPS logs
+        self.folder = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
+
         if points == None:
             return
         #Handle TypeError & ValueError exceptions when args are not instantiated correctly
@@ -243,7 +263,7 @@ class GPSListOfPoints:
             if not isinstance(points[i], GPSPoint):
                 raise TypeError('GPSListOfPoints Object Elements must be of type GPSPoint')
         self.points = points
-        self.folder = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
+        
 
     def __str__(self):
         if self.points == None:
@@ -253,6 +273,29 @@ class GPSListOfPoints:
             print("%s\n" % (self.points[i]))
         return ''
 
+    #return points length
+    def __len__(self):
+        if self.points == None:
+            return None
+        return len(self.points)
+
+    #get item: returns self.points[i]
+    def __getitem__(self, idx):
+        if self.points == None:
+            return None
+        return self.points[idx]
+
+    #Add a single point to the list
+    def addPointToList(self, point):
+        #Handle TypeError & ValueError exceptions when args are not instantiated correctly
+        if not isinstance(point, GPSPoint):
+            raise TypeError('point in addPointToList(self, point) must be passed a GPSPoint class object')
+        if not hasattr(self,'points'):
+            self.points = []
+        #add point
+        self.points.append(point)
+
+    #Write GPS coordinates to file
     def writeListToFile(self, filename):
         if self.points == None:
             return
@@ -262,6 +305,20 @@ class GPSListOfPoints:
         for i in range(0, len(self.points)):
             point_str = ("%s %s\n" % (self.points[i].latitude, self.points[i].longitude) )  
             FILE.write(point_str)
+        FILE.close()
+
+    #Load GPS coordinates from file
+    def loadListFromFile(self, filename):
+        self.points = []
+        #open file with GPS coordinate points
+        FILE = open(self.folder+filename,"r")
+        #read first line
+        line = FILE.readline()
+        while len(line) > 0:    #while there exists a next line to read
+            points_str = line.split()
+            self.points.append(GPSPoint(float(points_str[0]), float(points_str[1])))
+            line = FILE.readline()
+        #close file
         FILE.close()
         
 
