@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+
+#!/usr/bin/env python
+
+#node by fgg for EagleX
+#Fabian Gomez Gonzalez
+#a01209914@itesm.mx
+
+#Project ALVIN (Autonomous Logic Virtual Intelligence n' Navigation)
+
 import rospy
 from geometry_msgs.msg import Twist
 from gps_common.msg import GPSFix
