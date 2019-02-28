@@ -93,7 +93,7 @@ def GpsPoints():
     pub        = rospy.Publisher('gpstarget', GPSFix, queue_size=10)
     pub_target = rospy.Publisher('onfinaltarget', String, queue_size=10)
     rospy.init_node('GPSPoints', anonymous=True)
-    rospy.Subscriber('gpssim',GPSFix,callback)
+    rospy.Subscriber('GPS',GPSFix,callback)
     rospy.on_shutdown(bye)
 
     #obtain list of points from file

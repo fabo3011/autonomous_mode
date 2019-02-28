@@ -65,7 +65,7 @@ def MoveBaseGPSGoal():
     pub = rospy.Publisher('cmd', cmd, queue_size=10)
     rospy.init_node('MoveBaseGPSGoal', anonymous=True)
     rospy.Subscriber('gpstarget',GPSFix,targetCallback)
-    rospy.Subscriber('gpssim',GPSFix,GPSCallback)
+    rospy.Subscriber('GPS',GPSFix,GPSCallback)
     rospy.Subscriber('onfinaltarget',String,msgCb)
 
     gpsCmd = cmd()

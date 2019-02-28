@@ -52,7 +52,7 @@ def GpsGenerateList():
 
     pub = rospy.Publisher('GPSListDone', String, queue_size=10)
     rospy.init_node('GPSGenerateList', anonymous=True)
-    rospy.Subscriber('gpssim',GPSFix,callback)
+    rospy.Subscriber('GPS',GPSFix,callback)
     rospy.on_shutdown(bye)
 
     while not rospy.is_shutdown():
