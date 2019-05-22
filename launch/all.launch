@@ -1,0 +1,3 @@
+<launch>
+  <machine name="sensors" address="192.168.0.220" user="sensors" env-loader="/opt/ros/kinetic/env.sh" default="true"/>
+</launch>

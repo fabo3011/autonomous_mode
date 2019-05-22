@@ -1,7 +1,9 @@
 <launch>
 
 	<!-- Some general parameters -->
+	<!-- 
 	<param name="use_sim_time" value="true" />
+	-->
 	<rosparam file="$(find autonomous_mode)/param/ros.yaml"/>
 
 	<!-- Start Stage simulator with a given environment -->

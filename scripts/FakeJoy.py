@@ -17,7 +17,7 @@ left_vel = Float32()
 right_vel = Float32()
 
 maxVel = Float32() #2 m
-maxVel.data = 2.0
+maxVel.data = 1.0
 
 def leftCb(data):
     global left_vel

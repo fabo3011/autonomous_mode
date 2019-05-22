@@ -12,7 +12,7 @@ from std_msgs.msg import Float32
 
 
 #constant limit sets
-maxVel = 2.0
+maxVel = 1.0
 maxTurn = 0.6
 
 #base controller constants
@@ -47,8 +47,8 @@ def BaseController():
         vel_x  = cmdVel.Velocity
         vel_th = cmdVel.Turn 
 
-        left_vel  = vel_x - vel_th * width_robot / 2.0
-        right_vel = vel_x + vel_th * width_robot / 2.0
+        left_vel  = vel_x + vel_th * width_robot / 2.0
+        right_vel = vel_x - vel_th * width_robot / 2.0
 
         left_vel  = max(min(maxVel, left_vel), -maxVel)
         right_vel = max(min(maxVel, right_vel),-maxVel)

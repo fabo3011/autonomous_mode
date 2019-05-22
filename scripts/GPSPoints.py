@@ -8,6 +8,7 @@
 
 import rospy
 import roslib
+import sys
 import os
 from gps_common.msg import GPSFix
 from geometry_msgs.msg import Twist
@@ -15,8 +16,8 @@ from std_msgs.msg import String
 from lib.GPSVector import *
 
 #temp constants
-minDistanceToFinalTarget = 2.00 # 2m
-minDistanceToOtherTarget = 2.00 # 2m
+minDistanceToFinalTarget = 1.00 # 1m
+minDistanceToOtherTarget = 1.00 # 1m
 
 #path where the list of GPS points [latitude, longitude] is located
 #directory = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
@@ -25,9 +26,14 @@ filename = "log.txt"
 gpsData   = GPSFix()
 gpsTarget = GPSFix()
 
+gpsFinalTarget = GPSFix()
+
 #Points for function logic
 gpsData_point   = GPSPoint()
 gpsTarget_point = GPSPoint()
+
+#flag to indicate simulation or real data
+gpsTopic = "sim"
 
 def callback(data):
     #Get current GPS position from rover
@@ -71,7 +77,8 @@ def closerToNextTarget(data, target, next_target):
     next_to_target = GPSVector(next_target, target)
     
     #Compare distances and checks if data is closer to next target
-    if next_to_data.magnitude <= next_to_target.magnitude or dest_vec.magnitude <= minDistanceToOtherTarget:
+    #if next_to_data.magnitude <= next_to_target.magnitude or dest_vec.magnitude <= minDistanceToOtherTarget:
+    if dest_vec.magnitude <= minDistanceToOtherTarget:
         print('Target Reached!')
         print('SUCCESS')
         return True
@@ -82,6 +89,18 @@ def closerToNextTarget(data, target, next_target):
 def bye():
     print('Autonomous Mission Ended, see you soon EagleX...')
 
+def getNodeInputs():
+    global gpsTopic
+
+    numberOfArguments = len(sys.argv)
+    print(numberOfArguments)
+    if   numberOfArguments == 1:
+        return
+    elif numberOfArguments == 2:
+        gpsTopic = sys.argv[1]
+    else:
+        print("Invalid number of arguments in input")
+
 def GpsPoints():
     
     global gpsData
@@ -89,11 +108,23 @@ def GpsPoints():
     
     global gpsData_point
     global gpsTarget_point
+
+    global gpsTopic
     
     pub        = rospy.Publisher('gpstarget', GPSFix, queue_size=10)
     pub_target = rospy.Publisher('onfinaltarget', String, queue_size=10)
+    pub_final_target = rospy.Publisher('finaltarget', GPSFix, queue_size=10)
     rospy.init_node('GPSPoints', anonymous=True)
-    rospy.Subscriber('GPS',GPSFix,callback)
+
+
+    rospy.Subscriber('gpssim',GPSFix,callback)
+
+    #Subscriber with GPS current position (based on GpsTopic select between gpssim and GPS)
+    if gpsTopic == "sim":
+        rospy.Subscriber('gpssim', GPSFix, callback)
+    elif gpsTopic == "gps":
+        rospy.Subscriber('GPS', GPSFix, callback)
+
     rospy.on_shutdown(bye)
 
     #obtain list of points from file
@@ -115,6 +146,11 @@ def GpsPoints():
         gpsTarget_point = GPSPoint(gpsTarget.latitude, gpsTarget.longitude)
         #publish gpsTarget
         pub.publish(gpsTarget)
+
+        #publish final target
+        gpsFinalTarget.latitude  = points[len(points)-1].latitude
+        gpsFinalTarget.longitude = points[len(points)-1].longitude
+        pub_final_target.publish(gpsFinalTarget)
         
         print(curr_point_idx)
         
@@ -146,6 +182,7 @@ def GpsPoints():
 
 if __name__ == '__main__':
     try:
+        getNodeInputs()
         GpsPoints()
 
     except rospy.ROSInterruptException:
