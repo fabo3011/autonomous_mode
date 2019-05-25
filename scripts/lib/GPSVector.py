@@ -250,8 +250,12 @@ class GPSListOfPoints:
 
     def __init__(self, points=None):
 
-        #assign folder to store GPS logs
-        self.folder = os.path.expanduser("~/jetson_ws/src/autonomous_mode/GPS_files/")
+        #assign folder to store GPS logs, if is the jetson, assign a different workspace
+        self.folder = os.path.expanduser("~")
+        if self.folder == "/home/nvidia":
+            self.folder += "/jetson_ws/src/autonomous_mode/GPS_files/"
+        else:
+            self.folder += "/catkin_ws/src/autonomous_mode/GPS_files/"
 
         if points == None:
             return
