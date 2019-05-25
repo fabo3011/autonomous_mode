@@ -251,7 +251,7 @@ class GPSListOfPoints:
     def __init__(self, points=None):
 
         #assign folder to store GPS logs
-        self.folder = os.path.expanduser("~/catkin_ws/src/autonomous_mode/GPS_files/")
+        self.folder = os.path.expanduser("~/jetson_ws/src/autonomous_mode/GPS_files/")
 
         if points == None:
             return
