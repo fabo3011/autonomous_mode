@@ -14,6 +14,7 @@ import rospy
 import roslib
 import sys
 from gps_common.msg import GPSFix
+from std_msgs.msg import Char
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 from std_msgs.msg import UInt8
@@ -183,6 +184,9 @@ def MoveBaseGPSGoal():
     #ball tracker publisher
     pub_ball = rospy.Publisher('gps_controller', UInt8, queue_size=10)
 
+    #success publisher
+    success_ball = rospy.Publisher('servo_move',Char, queue_size=10)
+
     #Node init
     rospy.init_node('MoveBaseGPSGoal', anonymous=True)
 
@@ -215,11 +219,16 @@ def MoveBaseGPSGoal():
 
         if goal:
             print('Final GPS coordinate reached!!!')
+            print('Final GPS coordinate reached!!!')
+            print('Final GPS coordinate reached!!!')
+            print('Final GPS coordinate reached!!!')
+            print('Final GPS coordinate reached!!!')
             gpsCmd.Velocity = 0.0
             gpsCmd.Turn     = 0.0
             pub_cmd.publish(gpsCmd)
             programStatus = 0
-            #exit(0)
+            success_ball.publish(char(0x7F))
+            exit(0)
 
         if programStatus == 1 and firstGPSCb:
 
